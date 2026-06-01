@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>絲綢之舞</title>
+
+<style>
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:"Noto Serif TC",serif;
+}
+
+#container{
+    width:100%;
+    height:100%;
+}
+
+#title{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:white;
+    font-size:4rem;
+    letter-spacing:15px;
+    opacity:0;
+    transition:2s;
+    z-index:10;
+    text-shadow:
+    0 0 20px rgba(255,255,255,.5),
+    0 0 50px rgba(255,215,120,.5);
+}
+</style>
+</head>
+<body>
+
+<div id="container"></div>
+<div id="title">東方之美</div>
+
+<audio id="pipa" preload="auto">
+    <!-- 換成你的琵琶音檔 -->
+    <source src="pipa.mp3" type="audio/mpeg">
+</audio>
+
+<script type="module">
+
+import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+
+const container = document.getElementById('container');
+
+const scene = new THREE.Scene();
+
+scene.fog = new THREE.Fog(0x000000,10,80);
+
+const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    200
+);
+
+camera.position.set(0,0,15);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true
+});
+
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+container.appendChild(renderer.domElement);
+
+/////////////////////////////////////////////////
+// 光源
+/////////////////////////////////////////////////
+
+const ambient = new THREE.AmbientLight(
+    0xffffff,
+    1.5
+);
+scene.add(ambient);
+
+const goldLight = new THREE.PointLight(
+    0xffe6a0,
+    50,
+    100
+);
+goldLight.position.set(0,5,10);
+scene.add(goldLight);
+
+const backLight = new THREE.PointLight(
+    0xffffff,
+    20,
+    100
+);
+backLight.position.set(0,10,-20);
+scene.add(backLight);
+
+/////////////////////////////////////////////////
+// 星空粒子
+/////////////////////////////////////////////////
+
+const starsGeo = new THREE.BufferGeometry();
+
+const starsCount = 3000;
+
+const starsPos = [];
+
+for(let i=0;i<starsCount;i++){
+
+    starsPos.push(
+        (Math.random()-0.5)*200,
+        (Math.random()-0.5)*100,
+        (Math.random()-0.5)*200
+    );
+}
+
+starsGeo.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(starsPos,3)
+);
+
+const starsMat = new THREE.PointsMaterial({
+    color:0xffffff,
+    size:0.08
+});
+
+const stars = new THREE.Points(
+    starsGeo,
+    starsMat
+);
+
+scene.add(stars);
+
+/////////////////////////////////////////////////
+// 紅衣女子
+/////////////////////////////////////////////////
+
+const womanGroup = new THREE.Group();
+
+const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.8,1.2,5,32),
+    new THREE.MeshStandardMaterial({
+        color:0xaa0000,
+        roughness:0.5,
+        metalness:0.2
+    })
+);
+
+body.position.y=-1;
+womanGroup.add(body);
+
+const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.8,32,32),
+    new THREE.MeshStandardMaterial({
+        color:0xf5d0b0
+    })
+);
+
+head.position.y=2.4;
+womanGroup.add(head);
+
+womanGroup.position.set(0,-2,-20);
+
+scene.add(womanGroup);
+
+/////////////////////////////////////////////////
+// 白金絲綢
+/////////////////////////////////////////////////
+
+const silkList=[];
+
+for(let i=0;i<10;i++){
+
+    const geo = new THREE.PlaneGeometry(
+        8,
+        1.2,
+        40,
+        4
+    );
+
+    const mat = new THREE.MeshPhysicalMaterial({
+        color:0xfff4d6,
+        metalness:0.8,
+        roughness:0.15,
+        transmission:0.1,
+        side:THREE.DoubleSide
+    });
+
+    const silk = new THREE.Mesh(geo,mat);
+
+    silk.position.z = i*3;
+    silk.position.x = Math.sin(i)*2;
+
+    silk.userData.offset = Math.random()*10;
+
+    scene.add(silk);
+
+    silkList.push(silk);
+}
+
+/////////////////////////////////////////////////
+// 動畫
+/////////////////////////////////////////////////
+
+let startTime = Date.now();
+
+document.body.addEventListener('click',()=>{
+
+    const pipa = document.getElementById('pipa');
+    pipa.play().catch(()=>{});
+
+},{once:true});
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    const t = (Date.now()-startTime)*0.001;
+
+    silkList.forEach((silk,index)=>{
+
+        silk.position.z -= 0.08;
+
+        silk.rotation.y =
+            Math.sin(t*1.5+index)*0.5;
+
+        silk.rotation.x =
+            Math.cos(t*2+index)*0.2;
+
+        silk.position.y =
+            Math.sin(
+                t*2+
+                silk.userData.offset
+            )*1.5;
+
+        silk.position.x =
+            Math.cos(
+                t+
+                silk.userData.offset
+            )*2.5;
+
+        if(silk.position.z < -20){
+
+            silk.position.z = 15;
+        }
+    });
+
+    //////////////////////////////////////////////////
+    // 絲綢逐漸纏繞女人
+    //////////////////////////////////////////////////
+
+    if(t>8){
+
+        womanGroup.position.z += 0.05;
+
+        silkList.forEach((silk,index)=>{
+
+            silk.position.x *= 0.992;
+            silk.position.y *= 0.992;
+
+            silk.rotation.z += 0.01;
+        });
+    }
+
+    //////////////////////////////////////////////////
+    // 顯示標題
+    //////////////////////////////////////////////////
+
+    if(t>12){
+
+        document.getElementById('title')
+        .style.opacity=1;
+    }
+
+    camera.position.x =
+        Math.sin(t*0.3)*1.5;
+
+    camera.lookAt(0,0,-15);
+
+    renderer.render(scene,camera);
+}
+
+animate();
+
+window.addEventListener(
+'resize',
+()=>{
+
+camera.aspect=
+window.innerWidth/
+window.innerHeight;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(
+window.innerWidth,
+window.innerHeight
+);
+
+});
+
+</script>
+
+</body>
+</html>
