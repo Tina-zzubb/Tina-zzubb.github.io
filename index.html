@@ -1,1 +1,264 @@
-hello worid
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心臟病卡牌遊戲</title>
+
+<style>
+body{
+    font-family:"Microsoft JhengHei",sans-serif;
+    background:#0d6b37;
+    color:white;
+    text-align:center;
+    margin:0;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+#gameArea{
+    margin-top:20px;
+}
+
+.card{
+    width:140px;
+    height:200px;
+    background:white;
+    color:black;
+    border-radius:12px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:60px;
+    font-weight:bold;
+    box-shadow:0 5px 15px rgba(0,0,0,.4);
+}
+
+button{
+    padding:12px 24px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+#flipBtn{
+    background:#2196f3;
+    color:white;
+}
+
+#slapBtn{
+    background:#ff4444;
+    color:white;
+}
+
+#message{
+    font-size:24px;
+    margin-top:20px;
+    min-height:40px;
+}
+
+#score{
+    font-size:22px;
+    margin-top:15px;
+}
+
+#countDisplay{
+    font-size:32px;
+    margin:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🫀 心臟病 Card Game</h1>
+
+<div id="countDisplay">喊牌：1</div>
+
+<div class="card" id="card">
+?</div>
+
+<div id="gameArea">
+<button id="flipBtn">翻牌</button>
+<button id="slapBtn">拍牌</button>
+</div>
+
+<div id="message"></div>
+
+<div id="score">
+分數：<span id="scoreValue">0</span>
+</div>
+
+<script>
+
+const suits=["♠","♥","♦","♣"];
+
+let deck=[];
+let count=1;
+let score=0;
+
+let currentCard=null;
+let heartAttack=false;
+
+function createDeck(){
+
+    deck=[];
+
+    for(let suit of suits){
+
+        for(let num=1;num<=13;num++){
+
+            deck.push({
+                suit:suit,
+                value:num
+            });
+
+        }
+    }
+
+    shuffle(deck);
+}
+
+function shuffle(array){
+
+    for(let i=array.length-1;i>0;i--){
+
+        let j=Math.floor(Math.random()*(i+1));
+
+        [array[i],array[j]]=
+        [array[j],array[i]];
+    }
+}
+
+function displayCard(card){
+
+    const cardDiv=document.getElementById("card");
+
+    let text=card.value + card.suit;
+
+    cardDiv.innerHTML=text;
+
+    if(card.suit==="♥"||card.suit==="♦"){
+        cardDiv.style.color="red";
+    }else{
+        cardDiv.style.color="black";
+    }
+}
+
+function flipCard(){
+
+    if(deck.length===0){
+
+        endGame();
+        return;
+    }
+
+    currentCard=deck.pop();
+
+    displayCard(currentCard);
+
+    document.getElementById("countDisplay")
+    .innerText="喊牌："+count;
+
+    if(currentCard.value===count){
+
+        heartAttack=true;
+
+        document.getElementById("message")
+        .innerHTML="⚠️ 心臟病！快拍牌！";
+
+        setTimeout(()=>{
+
+            if(heartAttack){
+
+                score-=5;
+
+                updateScore();
+
+                document.getElementById("message")
+                .innerHTML="⏰ 太慢了！扣5分";
+
+                heartAttack=false;
+            }
+
+        },2000);
+
+    }else{
+
+        heartAttack=false;
+
+        document.getElementById("message")
+        .innerHTML="";
+    }
+
+    count++;
+
+    if(count>13){
+        count=1;
+    }
+}
+
+function slap(){
+
+    if(heartAttack){
+
+        score+=10;
+
+        updateScore();
+
+        document.getElementById("message")
+        .innerHTML="🎉 搶拍成功 +10";
+
+        heartAttack=false;
+
+    }else{
+
+        score-=2;
+
+        updateScore();
+
+        document.getElementById("message")
+        .innerHTML="❌ 誤拍 -2";
+    }
+}
+
+function updateScore(){
+
+    document.getElementById("scoreValue")
+    .innerText=score;
+}
+
+function endGame(){
+
+    document.getElementById("card")
+    .innerHTML="🏆";
+
+    document.getElementById("message")
+    .innerHTML=
+    "遊戲結束！最終分數："+score;
+
+    document.getElementById("flipBtn")
+    .disabled=true;
+
+    document.getElementById("slapBtn")
+    .disabled=true;
+}
+
+document.getElementById("flipBtn")
+.addEventListener("click",flipCard);
+
+document.getElementById("slapBtn")
+.addEventListener("click",slap);
+
+createDeck();
+
+</script>
+
+</body>
+</html>
