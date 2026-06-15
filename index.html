@@ -3,96 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>心臟病卡牌遊戲</title>
+<title>心臟病 Online</title>
 
 <style>
 body{
-    font-family:"Microsoft JhengHei",sans-serif;
-    background:#0d6b37;
-    color:white;
-    text-align:center;
     margin:0;
-    padding:20px;
+    overflow:hidden;
+    background:#fff6c9;
+    font-family:"Microsoft JhengHei",sans-serif;
+}
+
+#table{
+    width:100vw;
+    height:100vh;
+    position:relative;
 }
 
 h1{
-    margin-bottom:10px;
+    position:absolute;
+    top:10px;
+    width:100%;
+    text-align:center;
+    margin:0;
 }
 
-#gameArea{
-    margin-top:20px;
+#count{
+    position:absolute;
+    top:60px;
+    width:100%;
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
 }
 
-.card{
-    width:140px;
-    height:200px;
+#card{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:150px;
+    height:210px;
     background:white;
-    color:black;
     border-radius:12px;
-    margin:auto;
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:60px;
+    font-size:58px;
     font-weight:bold;
-    box-shadow:0 5px 15px rgba(0,0,0,.4);
 }
 
-button{
-    padding:12px 24px;
-    margin:10px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:18px;
+.hand{
+    position:absolute;
+    font-size:90px;
+    transition:.2s;
+    user-select:none;
 }
 
-#flipBtn{
-    background:#2196f3;
-    color:white;
+#playerHand{
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
 }
 
-#slapBtn{
-    background:#ff4444;
-    color:white;
+#cpu1{
+    left:120px;
+    top:50%;
+    transform:translateY(-50%) rotate(90deg);
 }
 
-#message{
-    font-size:24px;
-    margin-top:20px;
-    min-height:40px;
+#cpu2{
+    right:120px;
+    top:50%;
+    transform:translateY(-50%) rotate(-90deg);
 }
 
-#score{
+.flip-player{
+    animation:playerFlip .25s;
+}
+
+.flip-left{
+    animation:leftFlip .25s;
+}
+
+.flip-right{
+    animation:rightFlip .25s;
+}
+
+@keyframes playerFlip{
+    50%{
+        transform:translateX(-50%) translateY(-120px);
+    }
+}
+
+@keyframes leftFlip{
+    50%{
+        transform:translateY(-50%) rotate(90deg) translateX(100px);
+    }
+}
+
+@keyframes rightFlip{
+    50%{
+        transform:translateY(-50%) rotate(-90deg) translateX(-100px);
+    }
+}
+
+.slap{
+    animation:slap .25s;
+}
+
+@keyframes slap{
+    50%{
+        transform:translateX(-50%) translateY(-220px) scale(1.2);
+    }
+}
+
+#msg{
+    position:absolute;
+    top:110px;
+    width:100%;
+    text-align:center;
+    font-size:28px;
+    color:#d60000;
+    font-weight:bold;
+}
+
+#scoreBoard{
+    position:absolute;
+    bottom:10px;
+    left:10px;
     font-size:22px;
-    margin-top:15px;
-}
-
-#countDisplay{
-    font-size:32px;
-    margin:20px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🫀 心臟病 Card Game</h1>
+<div id="table">
 
-<div id="countDisplay">喊牌：1</div>
+<h1>🫀 心臟病</h1>
 
-<div class="card" id="card">
-?</div>
+<div id="count">喊牌：1</div>
 
-<div id="gameArea">
-<button id="flipBtn">翻牌</button>
-<button id="slapBtn">拍牌</button>
+<div id="msg"></div>
+
+<div id="card">?</div>
+
+<div id="cpu1" class="hand">✋</div>
+<div id="cpu2" class="hand">✋</div>
+<div id="playerHand" class="hand">✋</div>
+
+<div id="scoreBoard">
+玩家：<span id="playerScore">0</span><br>
+CPU A：<span id="cpuAScore">0</span><br>
+CPU B：<span id="cpuBScore">0</span>
 </div>
 
-<div id="message"></div>
-
-<div id="score">
-分數：<span id="scoreValue">0</span>
 </div>
 
 <script>
@@ -100,23 +166,26 @@ button{
 const suits=["♠","♥","♦","♣"];
 
 let deck=[];
-let count=1;
-let score=0;
+let callNumber=1;
 
-let currentCard=null;
+let playerScore=0;
+let cpuAScore=0;
+let cpuBScore=0;
+
 let heartAttack=false;
+let slapFinished=false;
 
-function createDeck(){
+function buildDeck(){
 
     deck=[];
 
     for(let suit of suits){
 
-        for(let num=1;num<=13;num++){
+        for(let n=1;n<=13;n++){
 
             deck.push({
-                suit:suit,
-                value:num
+                value:n,
+                suit:suit
             });
 
         }
@@ -129,106 +198,198 @@ function shuffle(array){
 
     for(let i=array.length-1;i>0;i--){
 
-        let j=Math.floor(Math.random()*(i+1));
+        const j=Math.floor(Math.random()*(i+1));
 
-        [array[i],array[j]]=
-        [array[j],array[i]];
+        [array[i],array[j]]=[array[j],array[i];
+        ]
     }
 }
 
-function displayCard(card){
+function animateFlip(){
 
-    const cardDiv=document.getElementById("card");
+    const cpu=document.getElementById("cpu1");
 
-    let text=card.value + card.suit;
+    cpu.classList.add("flip-left");
 
-    cardDiv.innerHTML=text;
-
-    if(card.suit==="♥"||card.suit==="♦"){
-        cardDiv.style.color="red";
-    }else{
-        cardDiv.style.color="black";
-    }
+    setTimeout(()=>{
+        cpu.classList.remove("flip-left");
+    },250);
 }
+
+function updateScore(){
+
+    playerScore=Math.max(playerScore,0);
+    cpuAScore=Math.max(cpuAScore,0);
+    cpuBScore=Math.max(cpuBScore,0);
+
+    playerScoreSpan.textContent=playerScore;
+    cpuAScoreSpan.textContent=cpuAScore;
+    cpuBScoreSpan.textContent=cpuBScore;
+}
+
+const playerScoreSpan=document.getElementById("playerScore");
+const cpuAScoreSpan=document.getElementById("cpuAScore");
+const cpuBScoreSpan=document.getElementById("cpuBScore");
 
 function flipCard(){
 
     if(deck.length===0){
 
-        endGame();
+        clearInterval(gameLoop);
+
+        document.getElementById("msg").innerHTML=
+        "🏆 遊戲結束";
+
         return;
     }
 
-    currentCard=deck.pop();
+    animateFlip();
 
-    displayCard(currentCard);
+    let card=deck.pop();
 
-    document.getElementById("countDisplay")
-    .innerText="喊牌："+count;
+    let cardDiv=document.getElementById("card");
 
-    if(currentCard.value===count){
+    cardDiv.innerHTML=
+    card.value + card.suit;
 
-        heartAttack=true;
+    cardDiv.style.color=
+    (card.suit==="♥"||card.suit==="♦")
+    ? "red"
+    : "black";
 
-        document.getElementById("message")
-        .innerHTML="⚠️ 心臟病！快拍牌！";
+    document.getElementById("count")
+    .innerHTML="喊牌："+callNumber;
+
+    if(card.value===callNumber){
+
+        startHeartAttack();
+    }
+
+    callNumber++;
+
+    if(callNumber>13){
+        callNumber=1;
+    }
+}
+
+function startHeartAttack(){
+
+    heartAttack=true;
+    slapFinished=false;
+
+    document.getElementById("msg")
+    .innerHTML="⚠️ 心臟病！快拍牌！";
+
+    const cpuReaction=
+    300+Math.random()*1000;
+
+    setTimeout(()=>{
+
+        if(!heartAttack) return;
+
+        cpuSlap();
+
+    },cpuReaction);
+
+    setTimeout(()=>{
+
+        if(heartAttack){
+
+            document.getElementById("msg")
+            .innerHTML="沒人拍到";
+
+            heartAttack=false;
+        }
+
+    },1500);
+}
+
+function cpuSlap(){
+
+    if(!heartAttack || slapFinished) return;
+
+    slapFinished=true;
+
+    const cpu=
+    Math.random()<0.5 ? "A":"B";
+
+    if(cpu==="A"){
+
+        cpuAScore++;
+
+        const hand=document.getElementById("cpu1");
+
+        hand.classList.add("flip-left");
 
         setTimeout(()=>{
-
-            if(heartAttack){
-
-                score-=5;
-
-                updateScore();
-
-                document.getElementById("message")
-                .innerHTML="⏰ 太慢了！扣5分";
-
-                heartAttack=false;
-            }
-
-        },2000);
+            hand.classList.remove("flip-left");
+        },250);
 
     }else{
 
-        heartAttack=false;
+        cpuBScore++;
 
-        document.getElementById("message")
-        .innerHTML="";
+        const hand=document.getElementById("cpu2");
+
+        hand.classList.add("flip-right");
+
+        setTimeout(()=>{
+            hand.classList.remove("flip-right");
+        },250);
     }
 
-    count++;
+    updateScore();
 
-    if(count>13){
-        count=1;
-    }
+    document.getElementById("msg")
+    .innerHTML="🤖 CPU "+cpu+" 搶拍成功";
+
+    heartAttack=false;
 }
 
-function slap(){
+function playerSlap(){
 
-    if(heartAttack){
+    if(!heartAttack || slapFinished)
+        return;
 
-        score+=10;
+    slapFinished=true;
 
-        updateScore();
+    playerScore++;
 
-        document.getElementById("message")
-        .innerHTML="🎉 搶拍成功 +10";
+    updateScore();
 
-        heartAttack=false;
+    const hand=document.getElementById("playerHand");
 
-    }else{
+    hand.classList.add("slap");
 
-        score-=2;
+    setTimeout(()=>{
+        hand.classList.remove("slap");
+    },250);
 
-        updateScore();
+    document.getElementById("msg")
+    .innerHTML="🎉 你搶拍成功";
 
-        document.getElementById("message")
-        .innerHTML="❌ 誤拍 -2";
-    }
+    heartAttack=false;
 }
 
-function updateScore(){
+document.addEventListener("keydown",(e)=>{
+
+    if(e.code==="Space"){
+
+        e.preventDefault();
+
+        playerSlap();
+    }
+});
+
+buildDeck();
+
+const gameLoop=
+setInterval(flipCard,500);
+
+</script>
+
+</body>
+</html>
 
     document.getElementById("scoreValue")
     .innerText=score;
