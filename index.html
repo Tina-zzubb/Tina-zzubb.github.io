@@ -6,386 +6,300 @@
 <title>唯美風景照</title>
 
 <style>
-pyramid.jpg      (埃及金字塔)
-fuji.jpg         (富士山)
-wuzhen.jpg       (烏鎮)
-sunmoonlake.jpg  (日月潭)
-arctic.jpg       (北極冰川)
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Microsoft JhengHei";
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Noto Serif TC",serif;
 }
 
 body{
-overflow:hidden;
-height:100vh;
+    min-height:100vh;
+    overflow:hidden;
+    color:#f4ead7;
 
-/* 膠卷底片背景 */
-background:
-repeating-linear-gradient(
-90deg,
-#2a2118 0px,
-#2a2118 140px,
-#000 140px,
-#000 155px,
-#2a2118 155px,
-#2a2118 300px
-);
+    background:
+    repeating-linear-gradient(
+        90deg,
+        rgba(20,20,20,.95) 0px,
+        rgba(20,20,20,.95) 22px,
+        rgba(60,60,60,.8) 22px,
+        rgba(60,60,60,.8) 26px
+    ),
+    linear-gradient(
+        135deg,
+        #251c15,
+        #3b2c22,
+        #4f3a2b,
+        #241912
+    );
 
-position:relative;
+    background-size:120px 120px,cover;
 }
 
-/* 膠卷孔洞 */
 body::before{
-content:"";
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-
-background:
-radial-gradient(circle,#c6ab7b 12px,transparent 13px);
-background-size:70px 70px;
-opacity:.12;
-pointer-events:none;
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at center,
+    rgba(255,215,170,.15),
+    transparent 60%);
+    pointer-events:none;
 }
 
-/* ==================== */
 /* 首頁 */
-/* ==================== */
-
 #welcome{
-position:absolute;
-width:100%;
-height:100%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-backdrop-filter:blur(3px);
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
 }
 
 #welcome h1{
-font-size:60px;
-color:#f3e2c3;
-letter-spacing:4px;
-text-shadow:
-0 0 15px rgba(255,220,170,.4),
-0 0 40px rgba(255,220,170,.2);
-margin-bottom:40px;
+    font-size:3rem;
+    letter-spacing:4px;
+    text-shadow:0 0 20px rgba(255,220,180,.4);
 }
 
-.startBtn{
-padding:18px 45px;
-border:none;
-cursor:pointer;
-font-size:20px;
-border-radius:12px;
-background:#c9b28a;
-color:#2a2118;
-font-weight:bold;
-transition:.4s;
+.beige-btn{
+    background:#c8ab7a;
+    color:#1f1f1f;
+    border:none;
+    padding:15px 40px;
+    border-radius:10px;
+    font-size:1.1rem;
+    cursor:pointer;
+    transition:.3s;
+    font-weight:bold;
 }
 
-.startBtn:hover{
-transform:translateY(-3px);
-background:#dcc4a0;
+.beige-btn:hover{
+    transform:translateY(-3px);
+    background:#ddc59b;
 }
 
-/* ==================== */
-/* 主頁 */
-/* ==================== */
-
-#mainPage{
-display:none;
-padding:40px;
-height:100%;
+/* 探索頁 */
+#explorePage{
+    display:none;
+    padding:40px;
 }
 
-.siteTitle{
-position:absolute;
-top:20px;
-right:40px;
-font-size:36px;
-color:#e8d2ab;
-font-weight:bold;
-letter-spacing:5px;
+.content{
+    display:flex;
+    gap:50px;
+    align-items:flex-start;
 }
 
 /* 電影膠卷框 */
-
-.content{
-margin-top:60px;
-display:flex;
-align-items:flex-start;
-gap:40px;
+.film-frame{
+    width:566px;
+    height:378px;
+    background:black;
+    border:18px solid black;
+    position:relative;
+    box-shadow:
+    0 0 40px rgba(0,0,0,.7),
+    0 0 60px rgba(255,210,150,.15);
 }
 
-.filmFrame{
-width:600px;
-height:400px;
-background:#000;
-padding:20px;
-position:relative;
-border-radius:8px;
-box-shadow:
-0 0 40px rgba(0,0,0,.5);
+.film-frame::before,
+.film-frame::after{
+    content:"";
+    position:absolute;
+    left:-18px;
+    width:100%;
+    height:20px;
+    background:
+    repeating-linear-gradient(
+        90deg,
+        white 0px,
+        white 12px,
+        black 12px,
+        black 30px
+    );
 }
 
-.filmFrame::before,
-.filmFrame::after{
-content:"";
-position:absolute;
-left:0;
-width:100%;
-height:16px;
-
-background:
-repeating-linear-gradient(
-90deg,
-#fff 0px,
-#fff 12px,
-transparent 12px,
-transparent 30px
-);
+.film-frame::before{
+    top:-18px;
 }
 
-.filmFrame::before{
-top:5px;
+.film-frame::after{
+    bottom:-18px;
 }
 
-.filmFrame::after{
-bottom:5px;
-}
-
-.filmFrame img{
-width:100%;
-height:100%;
-object-fit:cover;
-border-radius:3px;
+.film-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
 /* 介紹區 */
-
 .info{
-width:500px;
-padding-top:20px;
+    max-width:450px;
+    padding-top:30px;
 }
 
-.placeTitle{
-display:inline-block;
-padding:10px 20px;
-border:2px solid #c8b087;
-color:#f4dfbc;
-font-size:30px;
-margin-bottom:25px;
+.location-title{
+    display:inline-block;
+    border:2px solid #d8be92;
+    padding:10px 25px;
+    margin-bottom:25px;
+    font-size:1.5rem;
+    color:#f4e5c8;
+    background:rgba(0,0,0,.25);
 }
 
-.description{
-font-size:21px;
-line-height:2;
-color:#ead8bb;
-text-shadow:0 0 8px rgba(255,255,255,.1);
+#description{
+    line-height:2;
+    color:#eadfcf;
+    font-size:1.05rem;
 }
 
-/* 按鈕 */
-
-.buttons{
-margin-top:25px;
-width:600px;
-display:flex;
-justify-content:space-between;
+/* 按鈕區 */
+.nav{
+    margin-top:25px;
+    margin-left:10px;
 }
 
-.navBtn{
-padding:15px 35px;
-border:none;
-cursor:pointer;
-font-size:18px;
-font-weight:bold;
-background:#c9b28a;
-color:#2a2118;
-border-radius:10px;
-transition:.3s;
+.nav button{
+    margin-right:15px;
 }
 
-.navBtn:hover{
-transform:translateY(-3px);
-}
-
-/* 結束畫面 */
-
+/* 結束頁 */
 #endPage{
-display:none;
-position:absolute;
-width:100%;
-height:100%;
-justify-content:center;
-align-items:center;
+    display:none;
+    position:absolute;
+    inset:0;
+    justify-content:center;
+    align-items:center;
+    font-size:4rem;
+    letter-spacing:10px;
+    text-shadow:0 0 30px rgba(255,220,180,.5);
 }
-
-#endPage h1{
-font-size:80px;
-color:#f4dfbc;
-letter-spacing:8px;
-text-shadow:
-0 0 20px rgba(255,220,170,.5);
-}
-
 </style>
 </head>
 <body>
 
+<!-- 首頁 -->
 <div id="welcome">
+    <h1>準備好探索世界了嗎</h1>
+    <button class="beige-btn" onclick="startJourney()">
+        開始探索
+    </button>
+</div>
 
-<h1>準備好探索世界了嗎</h1>
+<!-- 探索頁 -->
+<div id="explorePage">
 
-<button class="startBtn"
-onclick="startJourney()">
-開始探索
-</button>
+    <div class="content">
+
+        <div>
+            <div class="film-frame">
+                <img id="photo">
+            </div>
+
+            <div class="nav">
+                <button class="beige-btn" onclick="previousPhoto()">
+                    回到上一張
+                </button>
+
+                <button class="beige-btn" onclick="nextPhoto()">
+                    繼續探索
+                </button>
+            </div>
+        </div>
+
+        <div class="info">
+            <div class="location-title" id="title"></div>
+            <p id="description"></p>
+        </div>
+
+    </div>
 
 </div>
 
-<div id="mainPage">
-
-<div class="siteTitle">唯美風景照</div>
-
-<div class="content">
-
-<div>
-
-<div class="filmFrame">
-<img id="photo">
-</div>
-
-<div class="buttons">
-<button class="navBtn" onclick="previousPhoto()">
-回到上一張
-</button>
-
-<button class="navBtn" onclick="nextPhoto()">
-繼續探索
-</button>
-</div>
-
-</div>
-
-<div class="info">
-
-<div class="placeTitle" id="title"></div>
-
-<div class="description" id="desc"></div>
-
-</div>
-
-</div>
-
-</div>
-
+<!-- 結束頁 -->
 <div id="endPage">
-<h1>旅程結束</h1>
+    旅程結束
 </div>
 
 <script>
 
-const places=[
+const places = [
 
 {
-title:"【埃及金字塔】",
-image:"pyramid.jpg",
-desc:"位於埃及吉薩高原，是古代文明最具代表性的建築之一。歷經數千年風沙仍屹立不搖，展現古埃及人卓越的建築智慧與神秘文化魅力。"
-},
-
-{
-title:"【日本富士山】",
-image:"fuji.jpg",
-desc:"富士山是日本最高峰，也是日本精神象徵。四季景色變化萬千，山形優美壯麗，吸引無數旅人前往欣賞與朝聖。"
-},
-
-{
-title:"【中國烏鎮】",
+title:"中國烏鎮",
 image:"wuzhen.jpg",
-desc:"烏鎮擁有典雅水鄉風貌與悠久歷史文化，小橋流水與古老建築交織出詩意景緻，是江南最具代表性的古鎮之一。"
+description:"烏鎮擁有千年水鄉文化，古老木造建築沿河而立，小船穿梭於靜謐水道之間。夜晚燈火映照河面，展現江南獨有的詩意與人文風情，是中國最具代表性的古鎮之一。"
 },
 
 {
-title:"【台灣日月潭】",
+title:"台灣日月潭",
 image:"sunmoonlake.jpg",
-desc:"日月潭是台灣最著名湖泊之一，湖光山色相互映襯。晨曦與夕陽映照湖面時，呈現寧靜而夢幻的自然景觀。"
+description:"日月潭坐落群山環抱之中，湖面如鏡倒映天光雲影。清晨薄霧瀰漫湖畔，傍晚夕陽染紅天際，展現自然與寧靜交融的絕美景色，被譽為台灣最具代表性的湖泊。"
 },
 
 {
-title:"【北極冰川】",
+title:"北極冰川",
 image:"arctic.jpg",
-desc:"廣闊冰原與純淨海域構成壯觀景色，漂浮冰山映照天空色彩。這片極地世界展現地球最純粹且震撼的自然力量。"
+description:"廣闊冰川與漂浮冰山構成純淨而壯麗的極地景觀。湛藍海面映照雪白山峰，在極寒環境中展現大自然鬼斧神工的力量，是探索地球原始風貌的重要地區。"
 }
 
 ];
 
-let randomOrder=[];
-let currentIndex=0;
+let remaining = [];
+let visited = [];
+let currentIndex = -1;
 
-function shuffle(){
+function startJourney(){
 
-randomOrder=[...places];
+document.getElementById("welcome").style.display="none";
+document.getElementById("explorePage").style.display="block";
 
-for(let i=randomOrder.length-1;i>0;i--){
+remaining=[...places];
 
-const j=Math.floor(Math.random()*(i+1));
-
-[randomOrder[i],randomOrder[j]]=
-[randomOrder[j],randomOrder[i]];
-
-}
+showRandomPhoto();
 }
 
-function showPhoto(){
+function showRandomPhoto(){
 
-const place=randomOrder[currentIndex];
+if(remaining.length===0){
 
-document.getElementById("photo").src=
-place.image;
+document.getElementById("explorePage").style.display="none";
+
+document.getElementById("endPage").style.display="flex";
+
+return;
+}
+
+let randomIndex=Math.floor(
+Math.random()*remaining.length
+);
+
+let chosen=remaining[randomIndex];
+
+visited.push(chosen);
+
+remaining.splice(randomIndex,1);
+
+currentIndex=visited.length-1;
+
+render(chosen);
+}
+
+function render(place){
+
+document.getElementById("photo").src=place.image;
 
 document.getElementById("title").innerText=
 place.title;
 
-document.getElementById("desc").innerText=
-place.desc;
-}
-
-function startJourney(){
-
-document.getElementById("welcome").style.display=
-"none";
-
-document.getElementById("mainPage").style.display=
-"block";
-
-shuffle();
-
-showPhoto();
-}
-
-function nextPhoto(){
-
-if(currentIndex < randomOrder.length-1){
-
-currentIndex++;
-
-showPhoto();
-
-}else{
-
-document.getElementById("mainPage").style.display=
-"none";
-
-document.getElementById("endPage").style.display=
-"flex";
-}
+document.getElementById("description").innerText=
+place.description;
 }
 
 function previousPhoto(){
@@ -394,8 +308,27 @@ if(currentIndex>0){
 
 currentIndex--;
 
-showPhoto();
+render(
+visited[currentIndex]
+);
+
 }
+}
+
+function nextPhoto(){
+
+if(currentIndex < visited.length-1){
+
+currentIndex++;
+
+render(
+visited[currentIndex]
+);
+
+return;
+}
+
+showRandomPhoto();
 }
 
 </script>
