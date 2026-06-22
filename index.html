@@ -3,421 +3,397 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>心臟病 Online</title>
+
+<title>唯美風景照</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-    margin:0;
-    overflow:hidden;
-    background:#fff6c9;
-    font-family:"Microsoft JhengHei",sans-serif;
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Noto Serif TC',serif;
 }
 
-#table{
-    width:100vw;
-    height:100vh;
-    position:relative;
+body{
+overflow:hidden;
+height:100vh;
+
+background:
+radial-gradient(circle at center,
+rgba(201,172,122,0.15),
+rgba(40,28,18,0.85)),
+repeating-linear-gradient(
+90deg,
+rgba(0,0,0,0.12) 0px,
+rgba(0,0,0,0.12) 8px,
+transparent 8px,
+transparent 200px
+),
+linear-gradient(
+135deg,
+#2c2218,
+#4d3928,
+#7c6343,
+#3a2b1f
+);
+
+background-size:cover;
+
+color:#f5ead8;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+
+background:
+radial-gradient(circle at 30% 30%, rgba(255,255,255,.05), transparent 30%),
+radial-gradient(circle at 70% 70%, rgba(255,255,255,.03), transparent 30%);
+
+pointer-events:none;
+}
+
+.screen{
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+position:absolute;
+top:0;
+left:0;
+}
+
+.hidden{
+display:none;
 }
 
 h1{
-    position:absolute;
-    top:10px;
-    width:100%;
-    text-align:center;
-    margin:0;
+font-size:4rem;
+font-weight:700;
+letter-spacing:4px;
+text-shadow:0 0 30px rgba(255,220,170,.4);
+margin-bottom:40px;
 }
 
-#count{
-    position:absolute;
-    top:60px;
-    width:100%;
-    text-align:center;
-    font-size:32px;
-    font-weight:bold;
+.btn{
+padding:16px 40px;
+background:#d2b48c;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:1rem;
+font-weight:600;
+transition:.3s;
+color:#2c2218;
+box-shadow:0 8px 25px rgba(0,0,0,.25);
 }
 
-#card{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:150px;
-    height:210px;
-    background:white;
-    border-radius:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,.3);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:58px;
-    font-weight:bold;
+.btn:hover{
+transform:translateY(-3px);
+background:#e2c59e;
 }
 
-.hand{
-    position:absolute;
-    font-size:90px;
-    transition:.2s;
-    user-select:none;
+.gallery-page{
+padding:40px;
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+justify-content:flex-start;
 }
 
-#playerHand{
-    bottom:30px;
-    left:50%;
-    transform:translateX(-50%);
+.content{
+display:flex;
+align-items:flex-start;
+gap:40px;
+margin-top:30px;
 }
 
-#cpu1{
-    left:120px;
-    top:50%;
-    transform:translateY(-50%) rotate(90deg);
+.film-frame{
+width:600px;
+height:400px;
+background:black;
+padding:18px;
+position:relative;
+box-shadow:
+0 0 40px rgba(0,0,0,.6),
+0 0 60px rgba(255,220,170,.1);
 }
 
-#cpu2{
-    right:120px;
-    top:50%;
-    transform:translateY(-50%) rotate(-90deg);
+.film-frame::before,
+.film-frame::after{
+content:"";
+position:absolute;
+top:0;
+width:22px;
+height:100%;
+background:
+repeating-linear-gradient(
+to bottom,
+transparent 0,
+transparent 16px,
+white 16px,
+white 32px
+);
 }
 
-.flip-player{
-    animation:playerFlip .25s;
+.film-frame::before{
+left:-22px;
 }
 
-.flip-left{
-    animation:leftFlip .25s;
+.film-frame::after{
+right:-22px;
 }
 
-.flip-right{
-    animation:rightFlip .25s;
+.film-frame img{
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
-@keyframes playerFlip{
-    50%{
-        transform:translateX(-50%) translateY(-120px);
-    }
+.info{
+max-width:500px;
+padding-top:20px;
 }
 
-@keyframes leftFlip{
-    50%{
-        transform:translateY(-50%) rotate(90deg) translateX(100px);
-    }
+.location-title{
+display:inline-block;
+border:2px solid #d2b48c;
+padding:8px 18px;
+font-size:1.6rem;
+margin-bottom:20px;
+font-weight:700;
 }
 
-@keyframes rightFlip{
-    50%{
-        transform:translateY(-50%) rotate(-90deg) translateX(-100px);
-    }
+.description{
+font-size:1.15rem;
+line-height:2;
+color:#f1e6d3;
 }
 
-.slap{
-    animation:slap .25s;
+.controls{
+margin-top:25px;
+display:flex;
+gap:15px;
 }
 
-@keyframes slap{
-    50%{
-        transform:translateX(-50%) translateY(-220px) scale(1.2);
-    }
+.end-title{
+font-size:4rem;
+margin-bottom:40px;
 }
 
-#msg{
-    position:absolute;
-    top:110px;
-    width:100%;
-    text-align:center;
-    font-size:28px;
-    color:#d60000;
-    font-weight:bold;
+.end-buttons{
+display:flex;
+gap:20px;
 }
 
-#scoreBoard{
-    position:absolute;
-    bottom:10px;
-    left:10px;
-    font-size:22px;
+@media(max-width:1200px){
+
+.content{
+flex-direction:column;
+align-items:center;
 }
+
+.gallery-page{
+align-items:center;
+}
+
+.info{
+max-width:90%;
+text-align:center;
+}
+
+}
+
 </style>
 </head>
-
 <body>
 
-<div id="table">
+<!-- 首頁 -->
+<div id="home" class="screen">
 
-<h1>🫀 心臟病</h1>
+<h1>準備好探索世界了嗎</h1>
 
-<div id="count">喊牌：1</div>
+<button class="btn" onclick="startJourney()">
+開始探索
+</button>
 
-<div id="msg"></div>
+</div>
 
-<div id="card">?</div>
+<!-- 景點頁 -->
+<div id="gallery" class="screen gallery-page hidden">
 
-<div id="cpu1" class="hand">✋</div>
-<div id="cpu2" class="hand">✋</div>
-<div id="playerHand" class="hand">✋</div>
+<div class="content">
 
-<div id="scoreBoard">
-玩家：<span id="playerScore">0</span><br>
-CPU A：<span id="cpuAScore">0</span><br>
-CPU B：<span id="cpuBScore">0</span>
+<div class="film-frame">
+<img id="photo">
+</div>
+
+<div class="info">
+<div class="location-title" id="title"></div>
+<div class="description" id="description"></div>
+</div>
+
+</div>
+
+<div class="controls">
+<button class="btn" onclick="previousPhoto()">
+回到上一張
+</button>
+
+<button class="btn" onclick="nextPhoto()">
+繼續探索
+</button>
+</div>
+
+</div>
+
+<!-- 結束頁 -->
+<div id="ending" class="screen hidden">
+
+<div class="end-title">
+旅程結束
+</div>
+
+<div class="end-buttons">
+
+<button class="btn" onclick="restartJourney()">
+再來一次
+</button>
+
+<button class="btn" onclick="backHome()">
+結束探索
+</button>
+
 </div>
 
 </div>
 
 <script>
 
-const suits=["♠","♥","♦","♣"];
+const locations = [
 
-let deck=[];
-let callNumber=1;
+{
+title:"埃及金字塔",
+image:"pyramid.jpg",
+description:"矗立於浩瀚沙漠中的古老奇蹟，歷經數千年風沙依然屹立不搖。它不僅象徵古埃及文明的巔峰智慧，也承載著人類對永恆與未知世界的想像。"
+},
 
-let playerScore=0;
-let cpuAScore=0;
-let cpuBScore=0;
+{
+title:"日本富士山",
+image:"fuji.jpg",
+description:"優雅而對稱的山體被譽為日本精神象徵。四季景色各異，春櫻、夏綠、秋楓與冬雪交織出如畫風景，吸引無數旅人前來朝聖。"
+},
 
-let heartAttack=false;
-let slapFinished=false;
+{
+title:"中國烏鎮",
+image:"wuzhen.webp",
+description:"古色古香的水鄉小鎮，以蜿蜒河道與木造建築聞名。小船緩緩穿梭其間，映照出江南千年的文化底蘊與悠閒生活氣息。"
+},
 
-function buildDeck(){
+{
+title:"台灣日月潭",
+image:"sunmoonlake.jpg",
+description:"湖光山色交融的自然秘境，清晨雲霧繚繞，黃昏霞光倒映湖面。這裡融合自然景觀與原住民族文化，是台灣最具代表性的湖泊。"
+},
 
-    deck=[];
-
-    for(let suit of suits){
-
-        for(let n=1;n<=13;n++){
-
-            deck.push({
-                value:n,
-                suit:suit
-            });
-
-        }
-    }
-
-    shuffle(deck);
+{
+title:"北極冰川",
+image:"arctic.jpg",
+description:"純白冰雪覆蓋天地，巨大的冰山漂浮於寧靜海面。這片極地世界展現地球最原始的壯麗景觀，也提醒人們珍惜脆弱的自然環境。"
 }
 
-function shuffle(array){
+];
 
-    for(let i=array.length-1;i>0;i--){
+let randomOrder=[];
+let currentIndex=0;
 
-        const j=Math.floor(Math.random()*(i+1));
+function shuffleArray(arr){
 
-        [array[i],array[j]]=[array[j],array[i];
-        ]
-    }
+let copy=[...arr];
+
+for(let i=copy.length-1;i>0;i--){
+
+const j=Math.floor(Math.random()*(i+1));
+
+[copy[i],copy[j]]=[copy[j],copy[i]];
 }
 
-function animateFlip(){
-
-    const cpu=document.getElementById("cpu1");
-
-    cpu.classList.add("flip-left");
-
-    setTimeout(()=>{
-        cpu.classList.remove("flip-left");
-    },250);
+return copy;
 }
 
-function updateScore(){
+function startJourney(){
 
-    playerScore=Math.max(playerScore,0);
-    cpuAScore=Math.max(cpuAScore,0);
-    cpuBScore=Math.max(cpuBScore,0);
+randomOrder=shuffleArray(locations);
 
-    playerScoreSpan.textContent=playerScore;
-    cpuAScoreSpan.textContent=cpuAScore;
-    cpuBScoreSpan.textContent=cpuBScore;
+currentIndex=0;
+
+document.getElementById("home").classList.add("hidden");
+document.getElementById("gallery").classList.remove("hidden");
+
+showPhoto();
 }
 
-const playerScoreSpan=document.getElementById("playerScore");
-const cpuAScoreSpan=document.getElementById("cpuAScore");
-const cpuBScoreSpan=document.getElementById("cpuBScore");
+function showPhoto(){
 
-function flipCard(){
+let item=randomOrder[currentIndex];
 
-    if(deck.length===0){
-
-        clearInterval(gameLoop);
-
-        document.getElementById("msg").innerHTML=
-        "🏆 遊戲結束";
-
-        return;
-    }
-
-    animateFlip();
-
-    let card=deck.pop();
-
-    let cardDiv=document.getElementById("card");
-
-    cardDiv.innerHTML=
-    card.value + card.suit;
-
-    cardDiv.style.color=
-    (card.suit==="♥"||card.suit==="♦")
-    ? "red"
-    : "black";
-
-    document.getElementById("count")
-    .innerHTML="喊牌："+callNumber;
-
-    if(card.value===callNumber){
-
-        startHeartAttack();
-    }
-
-    callNumber++;
-
-    if(callNumber>13){
-        callNumber=1;
-    }
+document.getElementById("photo").src=item.image;
+document.getElementById("title").textContent=item.title;
+document.getElementById("description").textContent=item.description;
 }
 
-function startHeartAttack(){
+function nextPhoto(){
 
-    heartAttack=true;
-    slapFinished=false;
+if(currentIndex<randomOrder.length-1){
 
-    document.getElementById("msg")
-    .innerHTML="⚠️ 心臟病！快拍牌！";
+currentIndex++;
+showPhoto();
 
-    const cpuReaction=
-    300+Math.random()*1000;
+}else{
 
-    setTimeout(()=>{
+document.getElementById("gallery").classList.add("hidden");
+document.getElementById("ending").classList.remove("hidden");
 
-        if(!heartAttack) return;
-
-        cpuSlap();
-
-    },cpuReaction);
-
-    setTimeout(()=>{
-
-        if(heartAttack){
-
-            document.getElementById("msg")
-            .innerHTML="沒人拍到";
-
-            heartAttack=false;
-        }
-
-    },1500);
 }
 
-function cpuSlap(){
-
-    if(!heartAttack || slapFinished) return;
-
-    slapFinished=true;
-
-    const cpu=
-    Math.random()<0.5 ? "A":"B";
-
-    if(cpu==="A"){
-
-        cpuAScore++;
-
-        const hand=document.getElementById("cpu1");
-
-        hand.classList.add("flip-left");
-
-        setTimeout(()=>{
-            hand.classList.remove("flip-left");
-        },250);
-
-    }else{
-
-        cpuBScore++;
-
-        const hand=document.getElementById("cpu2");
-
-        hand.classList.add("flip-right");
-
-        setTimeout(()=>{
-            hand.classList.remove("flip-right");
-        },250);
-    }
-
-    updateScore();
-
-    document.getElementById("msg")
-    .innerHTML="🤖 CPU "+cpu+" 搶拍成功";
-
-    heartAttack=false;
 }
 
-function playerSlap(){
+function previousPhoto(){
 
-    if(!heartAttack || slapFinished)
-        return;
+if(currentIndex>0){
 
-    slapFinished=true;
+currentIndex--;
+showPhoto();
 
-    playerScore++;
-
-    updateScore();
-
-    const hand=document.getElementById("playerHand");
-
-    hand.classList.add("slap");
-
-    setTimeout(()=>{
-        hand.classList.remove("slap");
-    },250);
-
-    document.getElementById("msg")
-    .innerHTML="🎉 你搶拍成功";
-
-    heartAttack=false;
 }
 
-document.addEventListener("keydown",(e)=>{
-
-    if(e.code==="Space"){
-
-        e.preventDefault();
-
-        playerSlap();
-    }
-});
-
-buildDeck();
-
-const gameLoop=
-setInterval(flipCard,500);
-
-</script>
-
-</body>
-</html>
-
-    document.getElementById("scoreValue")
-    .innerText=score;
 }
 
-function endGame(){
+function restartJourney(){
 
-    document.getElementById("card")
-    .innerHTML="🏆";
+randomOrder=shuffleArray(locations);
 
-    document.getElementById("message")
-    .innerHTML=
-    "遊戲結束！最終分數："+score;
+currentIndex=0;
 
-    document.getElementById("flipBtn")
-    .disabled=true;
+document.getElementById("ending").classList.add("hidden");
+document.getElementById("gallery").classList.remove("hidden");
 
-    document.getElementById("slapBtn")
-    .disabled=true;
+showPhoto();
 }
 
-document.getElementById("flipBtn")
-.addEventListener("click",flipCard);
+function backHome(){
 
-document.getElementById("slapBtn")
-.addEventListener("click",slap);
+document.getElementById("ending").classList.add("hidden");
+document.getElementById("home").classList.remove("hidden");
 
-createDeck();
+}
 
 </script>
 
